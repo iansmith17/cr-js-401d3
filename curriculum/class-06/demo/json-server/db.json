@@ -1,4 +1,23 @@
 {
-  "categories": [],
-  "products": []
+  "categories": [
+    {
+      "_id": 5,
+      "name": "Tires"
+    },
+    {
+      "_id": 7,
+      "name": "Helmets"
+    },
+    {
+      "name": "Exhaust",
+      "_id": 8
+    }
+  ],
+  "products": [
+    {
+      "_id": "pi",
+      "title": "Dunlop Tire",
+      "category": "Tires"
+    }
+  ]
 }
