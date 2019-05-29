@@ -33,6 +33,12 @@ app.get('/test/error', () => {
 const notFound = require('./middleware/notFound');
 app.use(notFound);
 
+const errorLogger = require('./middleware/error-logger');
+app.use(errorLogger);
+// app.use(errorLogger);
+// app.use(errorLogger);
+// app.use(errorLogger);
+
 module.exports = {
   server: app,
   start: port => {
