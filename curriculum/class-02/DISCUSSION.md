@@ -28,5 +28,7 @@ Wiki Entry Ideas:
 * [mdn object prototype](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/prototype)
 * [mdn class](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes)
 
+# Wiki
 
+  JavaScript inheritance has a different model than languages like Java or C#, in that the inheritance is prototypal instead of the standard class-based inheritance. This means that instead of created objects being instances of a class, they have prototype objects which serve as a template from which the object is created. In JavaScript, any object can be used as the prototype for a new object, and the properties can be overridden on that new object. 
 
