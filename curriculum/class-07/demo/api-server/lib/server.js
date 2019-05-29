@@ -28,6 +28,17 @@ app.get('/test/error', () => {
   throw 'Test Error!';
 });
 
+// API routes start here!
+// app.use(express.json());
+
+// Instead of inline routes....
+// app.get('/posts', (req, res) => { ... })
+
+const apiRouter = require('./routes/api');
+app.use('/api/v1', apiRouter);
+
+// API routes end here
+
 // If you wanted to redirect 404s
 // app.get('*', yellowHomeLogger, (req, res) => {
 //   res.redirect("/");
