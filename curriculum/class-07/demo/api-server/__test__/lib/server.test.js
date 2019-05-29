@@ -15,5 +15,11 @@ describe('web server', () => {
     return mockRequest
       .get('/404')
       .expect(404);
+  });
+
+  it('returns 500 for error', () => {
+    return mockRequest
+      .get('/test/error')
+      .expect(500);
   })
 });
