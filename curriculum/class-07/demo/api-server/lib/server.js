@@ -12,13 +12,26 @@ const app = express();
 const logger = require('./middleware/logger');
 app.use(logger);
 
-app.get('/', (req, res) => {
+const coloredLogger = require('./middleware/coloredLogger');
+const blueLogger = coloredLogger('blue');
+app.use(blueLogger);
+
+const yellowHomeLogger = coloredLogger('yellow');
+app.get('/', yellowHomeLogger, (req, res) => {
   res.send('OK');
 });
 
 app.get('/test/error', () => {
   throw 'Test Error!';
 });
+
+// If you wanted to redirect 404s
+// app.get('*', yellowHomeLogger, (req, res) => {
+//   res.redirect("/");
+// });
+
+const notFound = require('./middleware/notFound');
+app.use(notFound);
 
 module.exports = {
   server: app,
