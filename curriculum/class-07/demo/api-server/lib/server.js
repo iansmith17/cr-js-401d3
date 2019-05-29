@@ -12,6 +12,9 @@ const app = express();
 const logger = require('./middleware/logger');
 app.use(logger);
 
+// Below logger but above blueLogger means log static only once!
+app.use(express.static('./public'));
+
 const coloredLogger = require('./middleware/coloredLogger');
 const blueLogger = coloredLogger('blue');
 app.use(blueLogger);

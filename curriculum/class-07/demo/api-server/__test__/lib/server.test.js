@@ -22,4 +22,10 @@ describe('web server', () => {
       .get('/test/error')
       .expect(500);
   })
+
+  it('returns 200 for static file', () => {
+    return mockRequest
+      .get('/test.txt')
+      .expect(200);
+  });
 });
