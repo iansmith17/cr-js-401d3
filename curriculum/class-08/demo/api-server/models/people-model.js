@@ -1,22 +1,33 @@
 'use strict';
 
-const schema = require('./people-schema.js');
+const People = require('./people-schema');
 
-class People {
-
-  constructor() {
+class PeopleRepository {
+  getAll() {
+    return People.find();
   }
 
-  get(_id) {
-    let queryObject = _id ? {_id} : {};
-    return schema.find(queryObject);
-  }
-  
-  post(record) {
-    let newRecord = new schema(record);
-    return newRecord.save();
+  get(id) {
+    if (!/^[0-9a-z]{24}$/i.test(id))
+      return Promise.resolve(null);
+
+    return People.findOne({
+      _id: id // Does this need to be a Mongo ObjectId?
+    });
   }
 
+  create(person) {
+    var mongoPerson = new People(person);
+    return mongoPerson.save(); // include validation
+  }
+
+  update(person) {
+
+  }
+
+  delete(id) {
+
+  }
 }
 
-module.exports = People;
+module.exports = PeopleRepository;

@@ -1,30 +1,18 @@
 'use strict';
 
 const express = require('express');
-
-const People = require('../models/people-model.js');
-
-const people = new People();
 const router = express.Router();
 
-router.get('/people', getPeople);
-router.post('/people', addPerson);
+const PeopleRepository = require('../models/people-model');
+const peopleRepository = new PeopleRepository();
 
-function getPeople(req,res,next) {
-  people.get()
-    .then( data => {
-      res.status(200).json(data);
+router.get('/people', (req, res, next) => {
+  peopleRepository.getAll()
+    .then(data => {
+      res.json(data);
     })
     .catch(next);
-}
-
-function addPerson(req,res,next) {
-  console.log('BODY', req.body);
-  people.post(req.body)
-    .then( data => {
-      res.status(200).json(data);
-    })
-    .catch(next);
-}
+    //.catch(err => next(err));
+});
 
 module.exports = router;

@@ -3,7 +3,13 @@
 const mongoose = require('mongoose');
 const server = require('./lib/server.js');
 
-const MONGO = 'mongodb://localhost:27017/class-08';
-mongoose.connect(MONGO);
+const mongoConnect = require('./util/mongoose-connect');
+const MONGODB_URI = process.env.MONGODB_URI ||
+  'mongodb://localhost/401d3-people';
 
-server.start(3000);
+  mongoConnect(MONGODB_URI)
+    .then(() => {
+      server.start(3000);
+    })
+    .catch(console.error);
+

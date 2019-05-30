@@ -2,14 +2,11 @@
 
 const express = require('express');
 
-// Custom Routes
-const peopleRoutes = require('../routes/people.js');
-
 const app = express();
 
 app.use(express.json());
 
-// Actual Routes
+const peopleRoutes = require('../routes/people');
 app.use(peopleRoutes);
 
 module.exports = {

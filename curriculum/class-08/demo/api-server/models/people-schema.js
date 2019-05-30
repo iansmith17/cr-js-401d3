@@ -2,8 +2,13 @@
 
 const mongoose = require('mongoose');
 
-const people = mongoose.Schema({
-  name: { type:String, required:true },
+const peopleSchema = mongoose.Schema({
+  name: { type: String, required: true },
 });
 
-module.exports = mongoose.model('people', people);
+// If Mongoose already has a people, don't register a new one
+const People = mongoose.models.people ||
+  // Otherwise create people model from schema
+  mongoose.model('people', peopleSchema);
+
+module.exports = People;
