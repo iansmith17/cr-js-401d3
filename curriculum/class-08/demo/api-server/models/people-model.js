@@ -6,17 +6,17 @@ const db = [];
 
 class People {
   getAll() {
-    return db;
+    return Promise.resolve(db);
   }
 
   get(id) {
-    return db.find(p => p._id === id) || null;
+    return Promise.resolve(db.find(p => p._id === id) || null);
   }
 
   create(person) {
     person._id = uuid();
     db.push(person);
-    return person;
+    return Promise.resolve(person);
   }
 
   update(person) {
