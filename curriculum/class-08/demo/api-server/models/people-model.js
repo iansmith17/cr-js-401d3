@@ -8,6 +8,9 @@ class PeopleRepository {
   }
 
   get(id) {
+    if (!/^[0-9a-z]{24}$/i.test(id))
+      return Promise.resolve(null);
+
     return People.findOne({
       _id: id // Does this need to be a Mongo ObjectId?
     });

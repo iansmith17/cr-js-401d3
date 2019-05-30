@@ -46,15 +46,14 @@ describe('People Repository', () => {
     expect(all.find(p => p._id.toString() === fromDb._id.toString())).toBeDefined();
   });
 
-  // TODO: fix this
-  it.skip('get returns null for invalid id', async () => {
+  it('get returns null for invalid id', async () => {
     var result = await repository.get('poop');
 
     expect(result).toBeNull();
   });
 
-  it.skip('get returns null for missing id', async () => {
-    var result = await repository.get('deadbeefdeadbeef0000');
+  it('get returns null for missing id', async () => {
+    var result = await repository.get('deadbeefdeadbeefdeadbeef');
 
     expect(result).toBeNull();
   });
