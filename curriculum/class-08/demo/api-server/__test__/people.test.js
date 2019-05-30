@@ -32,4 +32,9 @@ describe('People Repository', () => {
 
     expect(result).toBeNull();
   });
+
+  it('throws ValidationError for person without name', () => {
+    return expect(repository.create({ Name: 'Keith' }))
+      .rejects.toThrowError();
+  });
 });
