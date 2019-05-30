@@ -1,13 +1,13 @@
 'use strict';
 
-const mongoConnect = require('../util/mongoose-connect');
+const mongoConnect = require('../../util/mongoose-connect');
 const MONGODB_URI = process.env.MONGODB_URI ||
   'mongodb://localhost/401d3-people';
 
 // Doesn't work because we aren't waiting for the promise to resolve
 // mongoConnect(MONGODB_URI);
 
-const People = require('../models/people-model');
+const People = require('../../models/people-model');
 const repository = new People();
 
 describe('People Repository', () => {

@@ -6,6 +6,8 @@ const app = express();
 
 app.use(express.json());
 
+const peopleRoutes = require('../routes/people');
+app.use(peopleRoutes);
 
 module.exports = {
   server: app,
