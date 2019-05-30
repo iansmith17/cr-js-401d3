@@ -1,35 +1,35 @@
 'use strict';
 
-const People = require(`../models/people-model.js`);
-const people = new People();
+const People = require('../models/people-model');
+const repository = new People();
 
-const supergoose = require('./supergoose.js');
+describe('People Repository', () => {
+  it('should start empty', () => {
+    var result = repository.getAll();
 
-beforeAll(supergoose.startDB);
-afterAll(supergoose.stopDB);
-
-describe('People Model', () => {
-  it('can post() a new player', () => {
-    let obj = {name:'John'};
-    return people.post(obj)
-      .then(record => {
-        Object.keys(obj).forEach(key =>{
-          expect(record[key]).toEqual(obj[key]);
-        });
-      });
+    expect(result).toEqual([]);
   });
 
-  it('can get() a player', () => {
-    let obj = {name:'John'};
-    return people.post(obj)
-      .then(record => {
-        return people.get(record._id)
-          .then(player => {
-            Object.keys(obj).forEach(key =>{
-              expect(player[0][key]).toEqual(obj[key]);
-            });
-          });
-      });
+  it('can create person and then get it', () => {
+    var result = repository.create({
+      name: 'Keith'
+    });
+
+    expect(result).toBeDefined();
+    expect(result.name).toBe('Keith');
+    expect(result._id).toBeDefined();
+
+    var fromDb = repository.get(result._id);
+    expect(fromDb).toBeDefined();
+    expect(fromDb).toEqual(result);
+
+    var all = repository.getAll();
+    expect(all).toEqual([ fromDb ]);
   });
-  
+
+  it('get returns null for missing id', () => {
+    var result = repository.get('poop');
+
+    expect(result).toBeNull();
+  });
 });

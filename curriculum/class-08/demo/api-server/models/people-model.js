@@ -1,22 +1,31 @@
 'use strict';
 
-const schema = require('./people-schema.js');
+const uuid = require('uuid');
+
+const db = [];
 
 class People {
-
-  constructor() {
+  getAll() {
+    return db;
   }
 
-  get(_id) {
-    let queryObject = _id ? {_id} : {};
-    return schema.find(queryObject);
-  }
-  
-  post(record) {
-    let newRecord = new schema(record);
-    return newRecord.save();
+  get(id) {
+    return db.find(p => p._id === id) || null;
   }
 
+  create(person) {
+    person._id = uuid();
+    db.push(person);
+    return person;
+  }
+
+  update(person) {
+
+  }
+
+  delete(id) {
+
+  }
 }
 
 module.exports = People;
