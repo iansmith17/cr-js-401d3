@@ -37,7 +37,7 @@ describe('Auth Router', () => {
 
       it('can POST JSON to create one', () => {
         return mockRequest
-          .post(user)
+          .post('/signup')
           .send(user)
           .expect(200)
       });
