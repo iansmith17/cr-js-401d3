@@ -21,7 +21,10 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
 // Routes
+
+// Unauthenticated stuff goes here
 app.use(authRouter);
+// Authenticated stuff goes here
 
 // Catchalls
 app.use(notFound);
