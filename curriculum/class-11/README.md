@@ -1,13 +1,11 @@
-![cf](http://i.imgur.com/7v5ASc8.png) Authentication
-====================================================
+# Authentication
 
 ## Learning Objectives
 
-**Students will be able to ...**
-* Students will learn about cryptographic hash and cypher algorithms
-* Students will be able to model a User and safely store their sensitive data
-* Students will be able to implement a Basic Authorization parser
-* Students will be able to create a Bearer Authentication parser
+* Describe cryptographic hash and cypher algorithms
+* Model a User and safely store their sensitive data
+* Implement a Basic Authorization parser
+* Create a Bearer Authentication parser
 
 ## Outline
 * :05 **Housekeeping/Recap**
