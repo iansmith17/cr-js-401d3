@@ -1,11 +1,9 @@
-![cf](http://i.imgur.com/7v5ASc8.png) OAuth
-===========================================
+# OAuth
 
 ## Learning Objectives
 
-**Students will be able to ...**
-* Students will learn to setup a Google Cloud appliction
-* Students will learn to implement OAuth2 on the server side
+* Setup a Google Cloud Application
+* Implement OAuth2 on the server side
 
 ## Outline
 * :05 **Housekeeping/Recap**

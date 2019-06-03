@@ -1,9 +1,7 @@
-![cf](http://i.imgur.com/7v5ASc8.png) Access Control (ACL)
-============================================
+# Access Control (ACL)
 
 ## Learning Objectives
 
-**Students will be able to ...**
 * Integrate back-end authorization controls using Express and Mongoose
 
 ## Outline

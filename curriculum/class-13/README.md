@@ -1,10 +1,8 @@
-![cf](http://i.imgur.com/7v5ASc8.png) Bearer Authorization
-===================================================
+# Bearer Authorization
 
 ## Learning Objectives
 
-**Students will be able to ...**
-* Students will be able to create a Bearer Authentication parser
+* Create a Bearer Authentication parser
 
 ## Outline
 * :05 **Housekeeping/Recap**
