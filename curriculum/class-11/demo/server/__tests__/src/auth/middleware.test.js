@@ -1,5 +1,6 @@
 'use strict';
 
+const supergoose = require('../../supergoose.js');
 const auth = require('../../../src/auth/middleware.js');
 const Users = require('../../../src/auth/users-model.js');
 
@@ -9,6 +10,14 @@ let users = {
   user: {username: 'user', password: 'password', role: 'user'},
 };
 
+beforeAll(async () => {
+  await supergoose.startDB();
+  await new Users(users.admin).save();
+  await new Users(users.editor).save();
+  await new Users(users.user).save();
+});
+
+afterAll(supergoose.stopDB);
 
 describe('Auth Middleware', () => {
   

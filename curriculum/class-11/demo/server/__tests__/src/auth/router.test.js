@@ -5,10 +5,9 @@ process.env.STORAGE = 'mongo';
 const jwt = require('jsonwebtoken');
 
 const { server } = require('../../../src/app.js');
-// const supergoose = require('../../supergoose.js');
+const supergoose = require('../../supergoose.js');
 
-const supertest = require('supertest');
-const mockRequest = supertest(server);
+const mockRequest = supergoose.server(server);
 
 let users = [
   {username: 'user-admin', password: 'password1', role: 'admin'},
@@ -16,19 +15,10 @@ let users = [
   {username: 'user-user', password: 'password3', role: 'user'},
 ];
 
-  // beforeAll(supergoose.startDB);
-  // afterAll(supergoose.stopDB);
+beforeAll(supergoose.startDB);
+afterAll(supergoose.stopDB);
 
 describe('Auth Router', () => {
-  beforeAll(() => {
-    const mongoose = require('mongoose');
-    const options = {
-      useNewUrlParser:true,
-      useCreateIndex: true,
-    };
-    return mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/auth_test', options);
-  })
-
   // For admin, editor, user, etc
   describe.each(users.map(u => [u.username, u.role, u]))(
     `User '%s' with role '%s'`,
