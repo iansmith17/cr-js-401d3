@@ -43,7 +43,7 @@ function authorize (req,res) {
         .set('Authorization', `Bearer ${token}`)
         .then(response => {
           let user = response.body;
-          console.log(`USER: ${user}`)
+          console.log(`USER:`, user)
           res.status(200).json(user);
         })
         .catch(error => {console.error('ack', error); })
