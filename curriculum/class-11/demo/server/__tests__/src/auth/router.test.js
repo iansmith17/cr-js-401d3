@@ -24,12 +24,30 @@ describe('Auth Router', () => {
     `User '%s' with role '%s'`,
     (username, role, user) => {
       // console.log({username, role, user});
+      let id;
 
       it('can POST JSON to create one', () => {
         return mockRequest
           .post('/signup')
           .send(user)
           .expect(200)
+          .then(({ text }) => {
+            var token = jwt.verify(text, process.env.SECRET || 'changeit');
+            id = token.id;
+
+            expect(token.id).toBeDefined();
+            expect(token.capabilities).toBeDefined();
+          });
+      });
+
+      it('can signin with basic', () => {
+        return mockRequest.post('/signin')
+          .auth(username, user.password)
+          .then(results => {
+            var token = jwt.verify(results.text, process.env.SECRET || 'changeit');
+            expect(token.id).toEqual(id);
+            expect(token.capabilities).toBeDefined();
+          });
       });
     }
   )

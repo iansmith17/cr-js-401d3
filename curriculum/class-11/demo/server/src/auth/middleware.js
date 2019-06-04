@@ -4,7 +4,7 @@ const User = require('./users-model');
 
 module.exports = (req, res, next) => {
   if (!req.headers.authorization)
-    return next();
+    return _authError();
 
   let [authType, authString] = req.headers.authorization.split(' ');
 
