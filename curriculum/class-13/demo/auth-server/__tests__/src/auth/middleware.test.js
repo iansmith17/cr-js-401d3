@@ -44,6 +44,7 @@ describe('Auth Middleware', () => {
       return middleware(req, res, next)
         .then(() => {
           expect(next).toHaveBeenCalledWith(errorObject);
+          expect(req.user).not.toBeDefined();
         });
 
     }); // it()
@@ -63,10 +64,50 @@ describe('Auth Middleware', () => {
         .then( () => {
           cachedToken = req.token;
           expect(next).toHaveBeenCalledWith();
+          expect(req.user).toBeDefined();
         });
 
     }); // it()
     
+    describe('Bearer Auth', () => {
+      it('returns 401 for invalid Bearer token', async () => {
+        //  Arrange
+        let req = {
+          headers: {
+            authorization: 'Bearer oops',
+          },
+        };
+        let res = {};
+        let next = jest.fn();
+        let middleware = auth;
+
+        // Act
+        await middleware(req, res, next);
+
+        // Assert
+        expect(next).toHaveBeenCalledWith(errorObject);
+        expect(req.user).not.toBeDefined();
+      });
+
+      it('returns 200 with token for valid Bearer token', async () => {
+        //  Arrange
+        let req = {
+          headers: {
+            authorization: `Bearer ${cachedToken}`,
+          },
+        };
+        let res = {};
+        let next = jest.fn();
+        let middleware = auth;
+
+        // Act
+        await middleware(req, res, next);
+
+        // Assert
+        expect(next).toHaveBeenCalledWith();
+        expect(req.user).toBeDefined();
+      })
+    })
   });
 
 });

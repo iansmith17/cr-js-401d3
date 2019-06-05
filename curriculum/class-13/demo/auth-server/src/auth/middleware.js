@@ -11,6 +11,8 @@ module.exports = (req, res, next) => {
   switch(authType.toLowerCase()) {
     case 'basic':
       return _authBasic(authString);
+    case 'bearer':
+      return _authBearer(authString);
     default:
       return _authError();
   }
@@ -23,6 +25,11 @@ module.exports = (req, res, next) => {
     req.token = user.generateToken();
     console.log({ token: req.token })
     next();
+  }
+
+  async function _authBearer(token) {
+    let user = await User.authenticateToken(token);
+    await _authenticate(user);
   }
 
   function _authBasic(authBase64String) {

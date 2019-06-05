@@ -20,11 +20,21 @@ users.pre('save', function(next) {
     .catch( error => {throw error;} );
 });
 
+users.statics.authenticateToken = async function(token) {
+  try {
+    let parsedToken = jwt.verify(token, process.env.SECRET || 'changeit');
+    let query = { _id: parsedToken.id };
+    return this.findOne(query);
+  }
+  catch {
+    return null;
+  }
+}
+
 users.statics.authenticateBasic = function(auth) {
   let query = {username:auth.username};
   return this.findOne(query)
     .then(user => user && user.comparePassword(auth.password))
-    .catch(console.error);
 };
 
 // Compare a plain text password against the hashed one we have saved
