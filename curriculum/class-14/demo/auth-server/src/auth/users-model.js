@@ -4,11 +4,27 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+const Role = require('./role-model');
+
 const users = new mongoose.Schema({
   username: {type: String, required: true, unique: true},
   password: {type: String, required: true},
   email: {type: String},
   role: {type: String, required:true, default:'user', enum:['admin','editor','user'] },
+  // TODO: the above enum is not going to work long-term
+  // Something like this would be more appropriate:
+  // role: { type: mongoose.Types.ObjectId, ref: Role.schema },
+});
+
+users.virtual('acl', {
+  ref: 'roles',
+  localField: 'role',
+  foreignField: 'role',
+  justOne: true
+});
+
+users.pre('findOne', function() {
+  this.populate('acl');
 });
 
 users.pre('save', function(next) {
