@@ -14,7 +14,7 @@ const users = new mongoose.Schema({
   // TODO: the above enum is not going to work long-term
   // Something like this would be more appropriate:
   // role: { type: mongoose.Types.ObjectId, ref: Role.schema },
-});
+}, { toObject: { virtuals: true }, toJSON: { virtuals: true } });
 
 users.virtual('acl', {
   ref: 'roles',
@@ -33,7 +33,7 @@ users.pre('save', function(next) {
       this.password = hashedPassword;
       next();
     })
-    .catch( error => {throw error;} );
+    .catch(next);
 });
 
 users.statics.authenticateToken = async function(token) {
@@ -67,5 +67,12 @@ users.methods.generateToken = function() {
   };
   return jwt.sign(tokenData, process.env.SECRET || 'changeit' );
 };
+
+users.methods.can = function(capability) {
+  if (!this.acl || !this.acl.capabilities)
+    return false;
+  
+  return this.acl.capabilities.includes(capability);
+}
 
 module.exports = mongoose.model('users', users);

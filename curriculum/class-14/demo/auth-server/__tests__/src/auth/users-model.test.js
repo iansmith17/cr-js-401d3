@@ -17,12 +17,18 @@ describe('User Model', () => {
       await new Role({ role: 'editor', capabilities: ['c', 'r', 'u'] }).save();
 
       // Act
-      let user = await User.findOne({ username: 'k' }).lean();
+      let user = await User.findOne({ username: 'k' });
 
       // Assert
       expect(user).toBeDefined();
       expect(user.acl).toBeDefined();
-      expect(user.acl.capabilities).toEqual(['c', 'r', 'u']);
+      expect(user.acl.capabilities.toObject()).toEqual(['c', 'r', 'u']);
+
+      expect(user.can('c')).toBe(true);
+      expect(user.can('r')).toBe(true);
+      expect(user.can('u')).toBe(true);
+
+      expect(user.can('d')).toBe(false);
     });
   });
 });

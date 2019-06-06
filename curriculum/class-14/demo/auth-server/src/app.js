@@ -26,6 +26,8 @@ app.use(express.urlencoded({extended:true}));
 app.use(authRouter);
 // Authenticated stuff goes here
 
+app.use(require('./routes/api'));
+
 // Catchalls
 app.use(notFound);
 app.use(errorHandler);

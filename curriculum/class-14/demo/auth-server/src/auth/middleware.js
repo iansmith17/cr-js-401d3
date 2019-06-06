@@ -2,7 +2,7 @@
 
 const User = require('./users-model');
 
-module.exports = (req, res, next) => {
+module.exports = (capability) => (req, res, next) => {
   if (!req.headers.authorization)
     return _authError();
 
@@ -17,13 +17,15 @@ module.exports = (req, res, next) => {
       return _authError();
   }
 
-  function _authenticate(user) {
+  async function _authenticate(user) {
     if (!user)
+      return _authError();
+
+    if (!user.can(capability))
       return _authError();
 
     req.user = user;
     req.token = user.generateToken();
-    console.log({ token: req.token })
     next();
   }
 
@@ -35,7 +37,6 @@ module.exports = (req, res, next) => {
   function _authBasic(authBase64String) {
     let base64Buffer = Buffer.from(authBase64String, 'base64');
     let authString = base64Buffer.toString();
-    console.log({ base64Buffer, authString });
     let [username, password] = authString.split(':');
     let auth = { username, password };
 

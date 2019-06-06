@@ -3,6 +3,7 @@
 const supergoose = require('../../supergoose.js');
 const auth = require('../../../src/auth/middleware.js');
 const Users = require('../../../src/auth/users-model.js');
+const Role = require('../../../src/auth/role-model');
 
 let users = {
   admin: {username: 'admin', password: 'password', role: 'admin'},
@@ -12,6 +13,7 @@ let users = {
 
 beforeAll(async () => {
   await supergoose.startDB();
+  await new Role({ role: 'admin', capabilities: ['update'] }).save();
   await new Users(users.admin).save();
   await new Users(users.editor).save();
   await new Users(users.user).save();
@@ -39,7 +41,7 @@ describe('Auth Middleware', () => {
       };
       let res = {};
       let next = jest.fn();
-      let middleware = auth;
+      let middleware = auth('update');
 
       return middleware(req, res, next)
         .then(() => {
@@ -58,7 +60,7 @@ describe('Auth Middleware', () => {
       };
       let res = {};
       let next = jest.fn();
-      let middleware = auth;
+      let middleware = auth('update');
 
       return middleware(req,res,next)
         .then( () => {
@@ -79,7 +81,7 @@ describe('Auth Middleware', () => {
         };
         let res = {};
         let next = jest.fn();
-        let middleware = auth;
+        let middleware = auth('update');
 
         // Act
         await middleware(req, res, next);
@@ -98,7 +100,7 @@ describe('Auth Middleware', () => {
         };
         let res = {};
         let next = jest.fn();
-        let middleware = auth;
+        let middleware = auth('update');
 
         // Act
         await middleware(req, res, next);
