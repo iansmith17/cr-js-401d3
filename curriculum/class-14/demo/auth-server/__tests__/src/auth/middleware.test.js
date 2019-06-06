@@ -1,11 +1,8 @@
 'use strict';
 
-process.env.SECRET="test";
-
-const {startDB,stopDB} = require('../../supergoose.js');
+const supergoose = require('../../supergoose.js');
 const auth = require('../../../src/auth/middleware.js');
 const Users = require('../../../src/auth/users-model.js');
-const Roles = require('../../../src/auth/roles-model.js');
 
 let users = {
   admin: {username: 'admin', password: 'password', role: 'admin'},
@@ -13,41 +10,24 @@ let users = {
   user: {username: 'user', password: 'password', role: 'user'},
 };
 
-let roles = {
-  admin: {role: 'admin', capabilities:['create','read','update','delete']},
-  editor: {role: 'editor', capabilities:['create','read','update']},
-  user: {role: 'user', capabilities:['read']},
-};
-
-beforeAll(async (done) => {
-  await startDB();
-  const admin = await new Users(users.admin).save();
-  const editor = await new Users(users.editor).save();
-  const user = await new Users(users.user).save();
-  const adminRole = await new Roles(roles.admin).save();
-  const editorRole = await new Roles(roles.editor).save();
-  const userRole = await new Roles(roles.user).save();
-  done()
+beforeAll(async () => {
+  await supergoose.startDB();
+  await new Users(users.admin).save();
+  await new Users(users.editor).save();
+  await new Users(users.user).save();
 });
 
-afterAll(stopDB);
+afterAll(supergoose.stopDB);
 
-/*
-  For now, these test only make assertions on the admin user
-  That user has a role with create, read, update, delete credentials
-  ... you can go further as you please.
- */
 describe('Auth Middleware', () => {
-
+  
   // admin:password: YWRtaW46cGFzc3dvcmQ=
   // admin:foo: YWRtaW46Zm9v
-  // editor:password: ZWRpdG9yOnBhc3N3b3Jk
-  // user:password: dXNlcjpwYXNzd29yZA==
-
-  let errorMessage = "Invalid User ID/Password";
-
+  
+  let errorObject = {"message": "Invalid Username/Password", "status": 401, "statusMessage": "Unauthorized"};
+  
   describe('user authentication', () => {
-
+    
     let cachedToken;
 
     it('fails a login for a user (admin) with the incorrect basic credentials', () => {
@@ -59,32 +39,13 @@ describe('Auth Middleware', () => {
       };
       let res = {};
       let next = jest.fn();
-      let middleware = auth();
+      let middleware = auth;
 
       return middleware(req, res, next)
-      .then(() => {
-        expect(next).toHaveBeenCalledWith(errorMessage);
-      });
-
-    }); // it()
-
-    it('fails a login for a user (admin) with an incorrect bearer token', () => {
-
-      let req = {
-        headers: {
-          authorization: 'Bearer foo',
-        },
-      };
-      let res = {};
-      let next = jest.fn();
-      let middleware = auth();
-
-      // The token authorizer in the model throws an error, making it so
-      // the middleware doesn't return a promise but instead throws an
-      // error in the main catch block, so this assertion validates that
-      // behavior instead of a standard promise signature
-      middleware(req, res, next)
-      expect(next).toHaveBeenCalledWith(errorMessage);
+        .then(() => {
+          expect(next).toHaveBeenCalledWith(errorObject);
+          expect(req.user).not.toBeDefined();
+        });
 
     }); // it()
 
@@ -97,78 +58,56 @@ describe('Auth Middleware', () => {
       };
       let res = {};
       let next = jest.fn();
-      let middleware = auth();
+      let middleware = auth;
 
       return middleware(req,res,next)
-      .then( () => {
-        cachedToken = req.token;
-        expect(next).toHaveBeenCalledWith();
-      });
+        .then( () => {
+          cachedToken = req.token;
+          expect(next).toHaveBeenCalledWith();
+          expect(req.user).toBeDefined();
+        });
 
     }); // it()
+    
+    describe('Bearer Auth', () => {
+      it('returns 401 for invalid Bearer token', async () => {
+        //  Arrange
+        let req = {
+          headers: {
+            authorization: 'Bearer oops',
+          },
+        };
+        let res = {};
+        let next = jest.fn();
+        let middleware = auth;
 
-    // this test borrows the token gotten from the previous it() ... not great practice
-    // but we're using an in-memory db instance, so we need a way to get the user ID
-    // and token from a "good" login, and the previous passing test does provide that ...
-    it('logs in an admin user with a correct bearer token', () => {
+        // Act
+        await middleware(req, res, next);
 
-      let req = {
-        headers: {
-          authorization: `Bearer ${cachedToken}`
-        },
-      };
-      let res = {};
-      let next = jest.fn();
-      let middleware = auth();
-
-      return middleware(req,res,next)
-      .then( () => {
-        expect(next).toHaveBeenCalledWith();
+        // Assert
+        expect(next).toHaveBeenCalledWith(errorObject);
+        expect(req.user).not.toBeDefined();
       });
 
-    }); // it()
+      it('returns 200 with token for valid Bearer token', async () => {
+        //  Arrange
+        let req = {
+          headers: {
+            authorization: `Bearer ${cachedToken}`,
+          },
+        };
+        let res = {};
+        let next = jest.fn();
+        let middleware = auth;
 
+        // Act
+        await middleware(req, res, next);
+
+        // Assert
+        expect(next).toHaveBeenCalledWith();
+        expect(req.user).toBeDefined();
+      })
+    })
   });
 
-  describe('user authorization', () => {
-
-    it('restricts access to a valid user without permissions', () => {
-
-      let req = {
-        headers: {
-          authorization: 'Basic YWRtaW46cGFzc3dvcmQ=',
-        },
-      };
-      let res = {};
-      let next = jest.fn();
-      let middleware = auth('godpower');
-
-      return middleware(req,res,next)
-      .then( () => {
-        expect(next).toHaveBeenCalledWith(errorMessage);
-      });
-
-    }); // it()
-
-    it('grants access when a user has permission', () => {
-
-      let req = {
-        headers: {
-          authorization: 'Basic YWRtaW46cGFzc3dvcmQ=',
-        },
-      };
-      let res = {};
-      let next = jest.fn();
-      let middleware = auth('delete');
-
-      return middleware(req,res,next)
-      .then( () => {
-        expect(next).toHaveBeenCalledWith();
-      });
-
-    }); // it()
-
-  }); // describe()
-
 });
-
