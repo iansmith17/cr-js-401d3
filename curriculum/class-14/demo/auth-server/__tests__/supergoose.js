@@ -39,8 +39,8 @@ supergoose.startDB = async () => {
 /**
  * Typically used in Jest afterAll hook
  */
-supergoose.stopDB = () => {
-  mongoose.disconnect();
+supergoose.stopDB = async () => {
+  await mongoose.disconnect();
   mongoServer.stop();
 };
 
