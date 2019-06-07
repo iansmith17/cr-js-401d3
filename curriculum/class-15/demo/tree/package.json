@@ -1,15 +1,15 @@
 {
-  "name": "async-app",
+  "name": "tree",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "binary-tree.js",
   "scripts": {
-    "test": "jest --verbose"
+    "test": "jest --verbose --coverage"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
     "jest": "^24.8.0"
   }
 }

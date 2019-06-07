@@ -4,6 +4,7 @@
         <title>Auth Test</title>
     </head>
     <body>
+        <h1>DeltaV Static Site!</h1>
         <main>
 
             <div id="oauth"></div>
@@ -21,6 +22,7 @@
             redirect_uri: 'http://localhost:3000/oauth',
             scope: 'email openid profile',
             prompt: 'consent',
+            state: 'DeltaV Static Demo!',
             response_type: 'code'
           };
 

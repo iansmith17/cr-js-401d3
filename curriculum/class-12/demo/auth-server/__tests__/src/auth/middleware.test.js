@@ -10,12 +10,11 @@ let users = {
   user: {username: 'user', password: 'password', role: 'user'},
 };
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   await supergoose.startDB();
-  const adminUser = await new Users(users.admin).save();
-  const editorUser = await new Users(users.editor).save();
-  const userUser = await new Users(users.user).save();
-  done()
+  await new Users(users.admin).save();
+  await new Users(users.editor).save();
+  await new Users(users.user).save();
 });
 
 afterAll(supergoose.stopDB);
@@ -25,7 +24,7 @@ describe('Auth Middleware', () => {
   // admin:password: YWRtaW46cGFzc3dvcmQ=
   // admin:foo: YWRtaW46Zm9v
   
-  let errorObject = {"message": "Invalid User ID/Password", "status": 401, "statusMessage": "Unauthorized"};
+  let errorObject = {"message": "Invalid Username/Password", "status": 401, "statusMessage": "Unauthorized"};
   
   describe('user authentication', () => {
     

@@ -8,7 +8,9 @@ const options = {
   useNewUrlParser:true,
   useCreateIndex: true,
 };
-mongoose.connect(process.env.MONGODB_URI, options);
+mongoose.connect(process.env.MONGODB_URI, options)
+  .then(() => {
+    // Start the web server
+    require('./src/app.js').start(process.env.PORT);
+  });
 
-// Start the web server
-require('./src/app.js').start(process.env.PORT);

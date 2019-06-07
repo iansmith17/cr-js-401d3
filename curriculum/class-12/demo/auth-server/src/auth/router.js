@@ -3,33 +3,27 @@
 const express = require('express');
 const authRouter = express.Router();
 
-const User = require('./users-model.js');
-const auth = require('./middleware.js');
-const oauth = require('./oauth/google.js');
+const User = require('./users-model');
 
 authRouter.post('/signup', (req, res, next) => {
   let user = new User(req.body);
   user.save()
-    .then( (user) => {
-      req.token = user.generateToken();
+    .then(user => {
       req.user = user;
-      res.set('token', req.token);
+
+      req.token = user.generateToken();
+      res.set('X-Token', req.token);
       res.cookie('auth', req.token);
+
       res.send(req.token);
-    }).catch(next);
+    })
+    .catch(next);
 });
 
+const auth = require('./middleware');
 authRouter.post('/signin', auth, (req, res, next) => {
   res.cookie('auth', req.token);
   res.send(req.token);
-});
-
-authRouter.get('/oauth', (req,res,next) => {
-  oauth(req)
-    .then( token => {
-      res.status(200).send(token);
-    })
-    .catch(next);
 });
 
 module.exports = authRouter;

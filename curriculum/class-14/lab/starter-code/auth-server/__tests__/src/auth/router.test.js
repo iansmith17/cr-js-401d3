@@ -4,7 +4,6 @@ process.env.SECRET = 'test';
 
 const jwt = require('jsonwebtoken');
 
-const Roles = require('../../../src/auth/roles-model.js');
 const server = require('../../../src/app.js').server;
 const supergoose = require('../../supergoose.js');
 
@@ -18,7 +17,7 @@ let users = {
 
 beforeAll(async (done) => {
   await supergoose.startDB();
-  done()
+  done();
 });
 
 

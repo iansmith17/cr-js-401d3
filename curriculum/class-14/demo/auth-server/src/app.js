@@ -6,7 +6,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 
 // Esoteric Resources
-const errorHandler = require( './middleware/500.js');
+const errorHandler = require( './middleware/error.js');
 const notFound = require( './middleware/404.js' );
 const authRouter = require( './auth/router.js' );
 
@@ -21,7 +21,12 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
 // Routes
+
+// Unauthenticated stuff goes here
 app.use(authRouter);
+// Authenticated stuff goes here
+
+app.use(require('./routes/api'));
 
 // Catchalls
 app.use(notFound);

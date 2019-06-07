@@ -17,6 +17,8 @@ let supergoose = module.exports = {};
  */
 supergoose.server = (server) => supertest(server);
 
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 600000;
+
 /**
  * Typically used in Jest beforeAll hook
  */
@@ -31,22 +33,22 @@ supergoose.startDB = async () => {
     useCreateIndex: true
   };
   
-  await mongoose.connect(mongoUri, mongooseOptions, (err) => {
-    if (err) console.error(err);
-  });
+  await mongoose.connect(mongoUri, mongooseOptions);
 };
 
 /**
  * Typically used in Jest afterAll hook
  */
-supergoose.stopDB = () => {
-  mongoose.disconnect();
+supergoose.stopDB = async () => {
+  await mongoose.disconnect();
   mongoServer.stop();
 };
 
-// Just so that it can live in the tests folder
-describe('supergoose', () => {
-  it('is super', () => {
-    expect(true).toBeTruthy();
+if (!module.parent) {
+  // Just so that it can live in the tests folder
+  describe('supergoose', () => {
+    it('is super', () => {
+      expect(true).toBeTruthy();
+    });
   });
-});
+}
